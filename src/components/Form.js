@@ -4,6 +4,8 @@ function Form(props) {
   const [firstName, setFirstName] = useState("Sylvia");
   const [lastName, setLastName] = useState("Woods");
   const [submittedData, setSubmittedData] = useState([]);
+  //add state for holding error messages
+  const [errors, setErrors] = useState([])
 
   function handleFirstNameChange(event) {
     setFirstName(event.target.value);
@@ -14,13 +16,17 @@ function Form(props) {
   }
 
   function handleSubmit(event){
-    console.log(event.target.value);
     event.preventDefault();
-    const formData = {firstName: firstName,lastName: lastName};
-    const DataArray =[...submittedData, formData];
-    setSubmittedData(DataArray);
-    setFirstName("");
-    setLastName("");
+    if (firstName.length > 0){
+      const formData = {firstName: firstName,lastName: lastName};
+      const DataArray =[...submittedData, formData];
+      setSubmittedData(DataArray);
+      setFirstName("");
+      setLastName("");
+    } else {
+      setErrors(["First name is required!"]);
+    }
+    
   }
 
   const listOfSubmissions = submittedData.map((data, index) => {
@@ -37,6 +43,14 @@ function Form(props) {
       <input type="text" onChange={handleLastNameChange} value={lastName} />
       <button type="submit">Submit</button>
     </form>
+    {/*Condtionally render error messages*/}
+    {errors.length > 0
+      ? errors.map((error, index) => (
+          <p key={index} style={{ color: "red" }}>
+            {error}
+          </p>
+        ))
+      : null}
     <h3>Submissions</h3>
       {listOfSubmissions}
     </div>
